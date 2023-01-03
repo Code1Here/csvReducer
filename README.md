@@ -1,6 +1,6 @@
 # csvReducer
 
-This console application expects a path to the .csv file as a command line arguement.  The csv file will be parsed & incoming data will be made into objects. If 
+This console application expects a path to the .csv file as a command line arguement. The csv file will be parsed using the *csv-parse* package to create objects. If 
 that object's *id* exists within the map, a function to update the map will trigger; else, a new key-value pair will be set. The result is a map whose contents are 
 a collection of Customer objects. After the CSV file is parsed, each Customer object will have all its transactions (of a given period of time) reduced to its 
 minimum, maximum & ending balance.
