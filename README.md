@@ -5,7 +5,7 @@ that object's *id* exists within the map, a function to update the map will trig
 a collection of Customer objects. After the CSV file is parsed, each Customer object will have all its transactions (of a given period of time) reduced to its 
 minimum, maximum & ending balance.
 
-**Makes use of streams for scalability or proper handling of large data sets**
+***Makes use of streams for scalability or proper handling of large data sets***
 
 Execution of the file prints the contents of the map to the console *like so*:
 
