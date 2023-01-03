@@ -5,14 +5,16 @@ const map = new Map();
 class Customer {
   constructor(CustomerID, Date, MinBalance = 0, MaxBalance = 0, EndingBalance = 0) {
     this.CustomerID = CustomerID;
-    const MM_YYYY = Date.slice(0, 2) + Date.slice(6, Date.length);
+    let MM_YYYY;
+    if (Date !== undefined) MM_YYYY = Date.slice(0, 2) + Date.slice(5, Date.length);
     this.Date = MM_YYYY;
     this.MinBalance = MinBalance;
     this.MaxBalance = MaxBalance;
     this.EndingBalance = EndingBalance;
   }
 }
-fs.createReadStream("original.csv")
+
+fs.createReadStream("test.csv")
   .pipe(
     parse({
       comment: "#",
@@ -20,8 +22,11 @@ fs.createReadStream("original.csv")
     })
   )
   .on("data", (data) => {
-    map[data["Customer Id"]] ? addTransaction(map, data["Customer Id"], data) : (map[data["Customer Id"]] = new Customer(data["Customer Id"], data.Date, data.Amount, data.Amount, data.Amount));
-    
+    const id = data["Customer Id"];
+    const transaction = parseInt(data.Amount);
+    if (id !== "") {
+      map.has(id) ? addTransaction(transaction, id) : map.set(id, new Customer(id, data.Date, transaction, transaction, transaction));
+    }
   })
   .on("error", (err) => {
     console.log(err);
@@ -30,22 +35,21 @@ fs.createReadStream("original.csv")
     console.log(map);
   });
 
-function addTransaction(thisMap, CustomerID, data) {
+function addTransaction(amount, id) {
   // We need to:: 1) set/check the date 2) @map[key] -> Take the obj's min, max & total using Amount col
-  let currentTotal = thisMap[CustomerID].get('EndingBalance');
-  let singleTransaction = data.get('Amount');
+  let currentTotal = map.get(id).EndingBalance;
+  let singleTransaction = amount;
 
   let testArgg = currentTotal + singleTransaction;
 
-  let min = thisMap[CustomerID].get('MinBalance');
+  let min = map.get(id).MinBalance;
   min < testArgg ? min : (min = testArgg); // If subtracting (even through addition) the transaction is more ? keep min : keep argg
-  thisMap.set(thisMap[CustomerID].get('MinBalance'), min);
+  map.get(id).MinBalance = min;
 
-  let max = thisMap[CustomerID].get('MaxBalance');
+  let max = map.get(id).MaxBalance;
   max > testArgg ? max : (max = testArgg); // Vice versa
-  thisMap.set(thisMap[CustomerID].get('MaxBalance'), max);
+  map.get(id).MaxBalance = max;
 
-  thisMap[CustomerID].get('EndingBalance') += currentTotal; // This matters at the end
-
+  map.get(id).EndingBalance = testArgg; // Sum total
   // Date variable matters only initially; refactor string once
 }
