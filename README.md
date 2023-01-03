@@ -7,6 +7,6 @@ minimum, maximum & ending balance.
 
 **Makes use of streams for scalability or proper handling of large data sets**
 
-Execution of the file prints the contents of the map to the console in *like so*:
+Execution of the file prints the contents of the map to the console *like so*:
 
 ![Screenshot (542)](https://user-images.githubusercontent.com/87147191/210291506-d585869b-28f5-410b-be7c-fc0c244b03f8.jpg)
